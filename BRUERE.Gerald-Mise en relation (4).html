@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Demande de mise en relation - GBF Patrimonial</title>
+<style>
+  :root {
+    --bleu-nuit: #1B2A4A;
+    --bleu-clair: #2F5C8F;
+    --or: #B08D45;
+    --gris-fond: #F6F6F4;
+    --gris-bordure: #D8D8D4;
+    --gris-texte: #4A4A48;
+    --blanc: #FFFFFF;
+    --rouge-alerte: #B23B3B;
+    --vert: #2A6B3C;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--gris-fond);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--gris-texte);
+    line-height: 1.5;
+  }
+
+  .conteneur {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 16px 48px;
+  }
+
+  header {
+    background: var(--bleu-nuit);
+    color: var(--blanc);
+    padding: 32px 16px 28px;
+  }
+
+  header .entete-interieur {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  header .cabinet {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+
+  header h1 {
+    font-size: 22px;
+    margin: 0 0 10px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  header p.intro {
+    font-size: 15px;
+    margin: 0;
+    color: #D7DCE6;
+  }
+
+  .carte {
+    background: var(--blanc);
+    border: 1px solid var(--gris-bordure);
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: -18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  h2 {
+    font-size: 17px;
+    color: var(--bleu-nuit);
+    margin: 28px 0 4px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--or);
+  }
+
+  h2.premiere { margin-top: 0; }
+
+  .sous-texte {
+    font-size: 13.5px;
+    color: #76766f;
+    margin: 6px 0 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--bleu-nuit);
+    margin: 14px 0 6px;
+  }
+
+  label .optionnel {
+    font-weight: 400;
+    color: #8a8a84;
+    font-size: 12.5px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--gris-bordure);
+    border-radius: 6px;
+    background: var(--blanc);
+    color: var(--gris-texte);
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--bleu-clair);
+    box-shadow: 0 0 0 3px rgba(47,92,143,0.12);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 70px;
+  }
+
+  .ligne-double {
+    display: flex;
+    gap: 12px;
+  }
+
+  .ligne-double > div {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .bloc-recommande {
+    border: 1px dashed var(--gris-bordure);
+    border-radius: 8px;
+    padding: 16px 16px 6px;
+    margin-top: 22px;
+    background: #FBFBFA;
+  }
+
+  .bloc-recommande .numero {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--or);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .bloc-recommande .facultatif-tag {
+    font-size: 12.5px;
+    color: #8a8a84;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .alerte-contact {
+    display: none;
+    background: #FBEAEA;
+    border: 1px solid var(--rouge-alerte);
+    color: var(--rouge-alerte);
+    font-size: 13.5px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+
+  .alerte-contact.visible { display: block; }
+
+  .aide-contact {
+    font-size: 12.5px;
+    color: #8a8a84;
+    margin-top: -2px;
+    margin-bottom: 8px;
+  }
+
+  .message-global {
+    display: none;
+    background: #FBEAEA;
+    border: 1px solid var(--rouge-alerte);
+    color: var(--rouge-alerte);
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-weight: 600;
+  }
+
+  .message-global.visible { display: block; }
+
+  button#bouton-envoi {
+    width: 100%;
+    margin-top: 28px;
+    background: var(--bleu-nuit);
+    color: var(--blanc);
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  button#bouton-envoi:hover { background: var(--bleu-clair); }
+  button#bouton-envoi:active { background: #1c3a5c; }
+  button#bouton-envoi:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  .pied-confidentialite {
+    font-size: 12.5px;
+    color: #8a8a84;
+    text-align: center;
+    margin-top: 16px;
+    line-height: 1.5;
+  }
+
+  /* Confirmation */
+  .confirmation {
+    display: none;
+    text-align: center;
+    padding: 40px 16px;
+  }
+
+  .confirmation.visible { display: block; }
+
+  .confirmation .icone-ok {
+    width: 64px;
+    height: 64px;
+    background: #E8F5ED;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+  }
+
+  .confirmation h3 {
+    font-size: 20px;
+    color: var(--bleu-nuit);
+    margin: 0 0 10px;
+  }
+
+  .confirmation p {
+    font-size: 15px;
+    color: #76766f;
+    margin: 0;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* Erreur réseau */
+  .erreur-envoi {
+    display: none;
+    background: #FBEAEA;
+    border: 1px solid var(--rouge-alerte);
+    color: var(--rouge-alerte);
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .erreur-envoi.visible { display: block; }
+
+  footer {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 13px;
+    color: #8a8a84;
+  }
+
+  footer .nom-conseiller {
+    font-weight: 700;
+    color: var(--bleu-nuit);
+    font-size: 14px;
+  }
+
+  footer .coordonnees { margin-top: 4px; }
+
+  footer a {
+    color: var(--bleu-clair);
+    text-decoration: none;
+  }
+
+  @media (max-width: 480px) {
+    .ligne-double { flex-direction: column; gap: 0; }
+    header { padding: 26px 16px 24px; }
+    header h1 { font-size: 19px; }
+    .carte { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="entete-interieur">
+    <p class="cabinet">GBF Patrimonial</p>
+    <h1>Vous connaissez peut-être quelqu&rsquo;un qui pourrait en profiter aussi</h1>
+    <p class="intro">Suite à notre rendez-vous, si une personne de votre entourage souhaite payer moins d&rsquo;impôt, préparer sa retraite, sécuriser financièrement sa famille ou simplement faire mieux que le Livret A, je serais ravi d&rsquo;échanger avec elle.</p>
+  </div>
+</header>
+
+<div class="conteneur">
+  <div class="carte">
+
+    <!-- FORMULAIRE -->
+    <div id="zone-formulaire">
+      <form id="formulaire-recommandation" novalidate>
+
+        <h2 class="premiere">Vos informations</h2>
+        <p class="sous-texte">Pour que je sache de la part de qui me contacter.</p>
+
+        <div class="ligne-double">
+          <div>
+            <label for="client-prenom">Votre prénom</label>
+            <input type="text" id="client-prenom" name="client-prenom" autocomplete="given-name" required>
+          </div>
+          <div>
+            <label for="client-nom">Votre nom</label>
+            <input type="text" id="client-nom" name="client-nom" autocomplete="family-name" required>
+          </div>
+        </div>
+
+        <h2>Personne(s) à recommander</h2>
+        <p class="sous-texte">Renseignez au moins une personne. Vous pouvez en ajouter jusqu&rsquo;à trois.</p>
+
+        <!-- Recommandé 1 -->
+        <div class="bloc-recommande" data-bloc="1">
+          <p class="numero">Personne 1</p>
+          <div class="ligne-double">
+            <div>
+              <label for="r1-prenom">Prénom</label>
+              <input type="text" id="r1-prenom" name="r1-prenom">
+            </div>
+            <div>
+              <label for="r1-nom">Nom</label>
+              <input type="text" id="r1-nom" name="r1-nom">
+            </div>
+          </div>
+          <label for="r1-email">E-mail <span class="optionnel">(au moins un des deux requis)</span></label>
+          <input type="email" id="r1-email" name="r1-email" autocomplete="off">
+          <label for="r1-tel">Téléphone</label>
+          <input type="tel" id="r1-tel" name="r1-tel" autocomplete="off">
+          <p class="aide-contact">Merci d&rsquo;indiquer au moins l&rsquo;e-mail ou le téléphone de cette personne.</p>
+          <label for="r1-description">Quelques mots sur cette personne <span class="optionnel">(facultatif)</span></label>
+          <textarea id="r1-description" name="r1-description" placeholder="Contexte, besoin identifié, meilleur moment pour la contacter..."></textarea>
+          <div class="alerte-contact" id="r1-alerte">Merci d&rsquo;indiquer au moins l&rsquo;e-mail ou le téléphone de cette personne avant l&rsquo;envoi.</div>
+        </div>
+
+        <!-- Recommandé 2 -->
+        <div class="bloc-recommande" data-bloc="2">
+          <p class="numero">Personne 2 <span class="facultatif-tag">(facultatif)</span></p>
+          <div class="ligne-double">
+            <div>
+              <label for="r2-prenom">Prénom</label>
+              <input type="text" id="r2-prenom" name="r2-prenom">
+            </div>
+            <div>
+              <label for="r2-nom">Nom</label>
+              <input type="text" id="r2-nom" name="r2-nom">
+            </div>
+          </div>
+          <label for="r2-email">E-mail</label>
+          <input type="email" id="r2-email" name="r2-email" autocomplete="off">
+          <label for="r2-tel">Téléphone</label>
+          <input type="tel" id="r2-tel" name="r2-tel" autocomplete="off">
+          <p class="aide-contact">Si renseignée, merci d&rsquo;indiquer au moins l&rsquo;e-mail ou le téléphone.</p>
+          <label for="r2-description">Quelques mots sur cette personne <span class="optionnel">(facultatif)</span></label>
+          <textarea id="r2-description" name="r2-description" placeholder="Contexte, besoin identifié, meilleur moment pour la contacter..."></textarea>
+          <div class="alerte-contact" id="r2-alerte">Merci d&rsquo;indiquer au moins l&rsquo;e-mail ou le téléphone de cette personne avant l&rsquo;envoi.</div>
+        </div>
+
+        <!-- Recommandé 3 -->
+        <div class="bloc-recommande" data-bloc="3">
+          <p class="numero">Personne 3 <span class="facultatif-tag">(facultatif)</span></p>
+          <div class="ligne-double">
+            <div>
+              <label for="r3-prenom">Prénom</label>
+              <input type="text" id="r3-prenom" name="r3-prenom">
+            </div>
+            <div>
+              <label for="r3-nom">Nom</label>
+              <input type="text" id="r3-nom" name="r3-nom">
+            </div>
+          </div>
+          <label for="r3-email">E-mail</label>
+          <input type="email" id="r3-email" name="r3-email" autocomplete="off">
+          <label for="r3-tel">Téléphone</label>
+          <input type="tel" id="r3-tel" name="r3-tel" autocomplete="off">
+          <p class="aide-contact">Si renseignée, merci d&rsquo;indiquer au moins l&rsquo;e-mail ou le téléphone.</p>
+          <label for="r3-description">Quelques mots sur cette personne <span class="optionnel">(facultatif)</span></label>
+          <textarea id="r3-description" name="r3-description" placeholder="Contexte, besoin identifié, meilleur moment pour la contacter..."></textarea>
+          <div class="alerte-contact" id="r3-alerte">Merci d&rsquo;indiquer au moins l&rsquo;e-mail ou le téléphone de cette personne avant l&rsquo;envoi.</div>
+        </div>
+
+        <div class="message-global" id="message-global"></div>
+
+        <button type="submit" id="bouton-envoi">Envoyer ma recommandation</button>
+        <div class="erreur-envoi" id="erreur-envoi">
+          Une erreur est survenue lors de l&rsquo;envoi. Veuillez réessayer ou contacter directement Gérald Bruere par e-mail.
+        </div>
+        <p class="pied-confidentialite">Vos informations sont transmises uniquement à Gérald Bruere et ne seront pas partagées.</p>
+
+      </form>
+    </div>
+
+    <!-- CONFIRMATION (masquée jusqu'à l'envoi réussi) -->
+    <div class="confirmation" id="zone-confirmation">
+      <div class="icone-ok">&#10003;</div>
+      <h3>Merci pour votre confiance !</h3>
+      <p>Votre recommandation a bien été transmise à Gérald Bruere. Il prendra contact avec les personnes concernées dans les meilleurs délais.</p>
+    </div>
+
+  </div>
+
+  <footer>
+    <p class="nom-conseiller">Gérald BRUERE &mdash; GBF Patrimonial</p>
+    <p class="coordonnees">
+      9 ter avenue Serratrice, 06130 Grasse<br>
+      <a href="mailto:gerald.bruere@gbf-patrimonial.com">gerald.bruere@gbf-patrimonial.com</a> &middot; 06 58 26 23 95
+    </p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // =====================================================
+  // REMPLACEZ CETTE URL PAR VOTRE IDENTIFIANT FORMSPREE
+  // Exemple : https://formspree.io/f/abcdefgh
+  // =====================================================
+  var FORMSPREE_URL = "https://formspree.io/f/xbdvqzed";
+
+  var formulaire    = document.getElementById("formulaire-recommandation");
+  var messageGlobal = document.getElementById("message-global");
+  var bouton        = document.getElementById("bouton-envoi");
+  var erreurEnvoi   = document.getElementById("erreur-envoi");
+
+  function valeur(id) {
+    var champ = document.getElementById(id);
+    return champ ? champ.value.trim() : "";
+  }
+
+  function blocRempli(p) {
+    return valeur(p+"-prenom") || valeur(p+"-nom") || valeur(p+"-email") || valeur(p+"-tel") || valeur(p+"-description");
+  }
+
+  function contactManquant(p) {
+    return !valeur(p+"-email") && !valeur(p+"-tel");
+  }
+
+  function masquerAlertes() {
+    ["r1","r2","r3"].forEach(function(p) {
+      document.getElementById(p+"-alerte").classList.remove("visible");
+    });
+    messageGlobal.classList.remove("visible");
+    messageGlobal.textContent = "";
+    erreurEnvoi.classList.remove("visible");
+  }
+
+  function construireMessage(blocsValides) {
+    var lignes = [];
+    lignes.push("=== Nouvelle demande de mise en relation ===");
+    lignes.push("");
+    lignes.push("Client : " + valeur("client-prenom") + " " + valeur("client-nom"));
+    lignes.push("");
+
+    blocsValides.forEach(function(p, i) {
+      lignes.push("--- Personne " + (i+1) + " ---");
+      var nom = (valeur(p+"-prenom") + " " + valeur(p+"-nom")).trim();
+      if (nom) lignes.push("Nom : " + nom);
+      if (valeur(p+"-email")) lignes.push("E-mail : " + valeur(p+"-email"));
+      if (valeur(p+"-tel"))   lignes.push("Tel : " + valeur(p+"-tel"));
+      if (valeur(p+"-description")) lignes.push("Note : " + valeur(p+"-description"));
+      lignes.push("");
+    });
+
+    return lignes.join("\n");
+  }
+
+  formulaire.addEventListener("submit", function(e) {
+    e.preventDefault();
+    masquerAlertes();
+
+    var prefixes = ["r1","r2","r3"];
+    var blocsValides = [];
+    var blocsErreur  = [];
+
+    prefixes.forEach(function(p) {
+      if (blocRempli(p)) {
+        if (contactManquant(p)) blocsErreur.push(p);
+        else blocsValides.push(p);
+      }
+    });
+
+    if (valeur("client-prenom") === "" || valeur("client-nom") === "") {
+      messageGlobal.textContent = "Merci d'indiquer votre prénom et votre nom avant l'envoi.";
+      messageGlobal.classList.add("visible");
+      document.getElementById("client-prenom").scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    if (blocsErreur.length > 0) {
+      blocsErreur.forEach(function(p) {
+        document.getElementById(p+"-alerte").classList.add("visible");
+      });
+      document.getElementById(blocsErreur[0]+"-alerte").scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    if (blocsValides.length === 0) {
+      messageGlobal.textContent = "Merci de renseigner au moins une personne à recommander avant l'envoi.";
+      messageGlobal.classList.add("visible");
+      messageGlobal.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    // Envoi Formspree via fetch
+    bouton.disabled = true;
+    bouton.textContent = "Envoi en cours…";
+
+    var donnees = {
+      _subject: "Recommandation - " + valeur("client-prenom") + " " + valeur("client-nom"),
+      message: construireMessage(blocsValides)
+    };
+
+    fetch(FORMSPREE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(donnees)
+    })
+    .then(function(reponse) {
+      if (reponse.ok) {
+        document.getElementById("zone-formulaire").style.display = "none";
+        document.getElementById("zone-confirmation").classList.add("visible");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        throw new Error("Erreur serveur");
+      }
+    })
+    .catch(function() {
+      bouton.disabled = false;
+      bouton.textContent = "Envoyer ma recommandation";
+      erreurEnvoi.classList.add("visible");
+      erreurEnvoi.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
